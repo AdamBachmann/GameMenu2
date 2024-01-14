@@ -7,9 +7,10 @@
 class Menu
 {
 private:
-	std::array<std::unique_ptr<Button>, 3> buttons;
+	static constexpr size_t NUMBER_OF_BUTTONS = 3;
+	std::array<std::unique_ptr<Button>, NUMBER_OF_BUTTONS> buttons;
 public:
 	Menu();
 	void handleMenu(sf::RenderWindow& window);
-	void handleMenuEvent(sf::RenderWindow& window, sf::Event event, std::function<void()> foo);
+	void handleMenuEvent(sf::RenderWindow& window, sf::Event event);
 };

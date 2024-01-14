@@ -1,5 +1,4 @@
 #include "Button.hpp"
-#include <iostream>
 
 Button::Button(
 	sf::Vector2f _button_size, 
@@ -9,7 +8,8 @@ Button::Button(
 	std::string _button_text, 
 	int _font_size, 
 	sf::Color _font_color, 
-	sf::Vector2f _text_position)
+	sf::Vector2f _text_position,
+	std::function<void()> _onClickFoo):onClickFoo(_onClickFoo)
 {
 	sf::RectangleShape::setSize(_button_size);
 	sf::RectangleShape::setFillColor(_button_color);
@@ -24,7 +24,12 @@ Button::Button(
 	text.setPosition(_text_position);
 
 	hover_color_change = 0;
-	hover_parameter = 0.7;
+	hover_parameter = 0.7f;
+
+	if (not onClickFoo)
+	{
+		onClickFoo = std::bind(&Button::defFoo, this);
+	}
 }
 
 sf::Text Button::getText()
@@ -47,7 +52,7 @@ void Button::setTextPosition(sf::Vector2f _text_position)
 	text.setPosition(_text_position);
 }
 
-int Button::isCursorOverButton(sf::RenderWindow& window)
+int Button::isCursorOverButton(const sf::RenderWindow& window) const
 {
 	if (sf::Mouse::getPosition(window).x >= this->getPosition().x &&
 		sf::Mouse::getPosition(window).x <= this->getPosition().x + this->getGlobalBounds().width &&
@@ -65,9 +70,9 @@ void Button::hoverButton(sf::RenderWindow& window)
 	if (hover_color_change == 0)
 	{
 		sf::Color darkerColor = sf::Color(
-			this->getFillColor().r * hover_parameter,
-			this->getFillColor().g * hover_parameter,
-			this->getFillColor().b * hover_parameter
+			static_cast<sf::Uint8>(this->getFillColor().r * hover_parameter),
+			static_cast<sf::Uint8>(this->getFillColor().g * hover_parameter),
+			static_cast<sf::Uint8>(this->getFillColor().b * hover_parameter)
 		);
 
 		this->setFillColor(darkerColor);
@@ -81,9 +86,9 @@ void Button::unhoverButton(sf::RenderWindow& window)
 	if (hover_color_change == 1)
 	{
 		sf::Color darkerColor = sf::Color(
-			this->getFillColor().r * (1 / hover_parameter),
-			this->getFillColor().g * (1 / hover_parameter),
-			this->getFillColor().b * (1 / hover_parameter)
+			static_cast<sf::Uint8>(this->getFillColor().r * (1 / hover_parameter)),
+			static_cast<sf::Uint8>(this->getFillColor().g * (1 / hover_parameter)),
+			static_cast<sf::Uint8>(this->getFillColor().b * (1 / hover_parameter))
 		);
 
 		this->setFillColor(darkerColor);
@@ -92,9 +97,17 @@ void Button::unhoverButton(sf::RenderWindow& window)
 	}
 }
 
-void Button::onClick(std::function<void()> foo)
+void Button::onClick()
 {
-	return foo();
+	if (onClickFoo)
+	{
+		onClickFoo();
+	}
+}
+
+void Button::setOnClick(std::function<void()> foo)
+{
+	onClickFoo = foo;
 }
 
 void Button::handleButton(sf::RenderWindow& window)
@@ -112,10 +125,10 @@ void Button::handleButton(sf::RenderWindow& window)
 	window.draw(this->text);
 }
 
-void Button::handleButtonEvent(sf::RenderWindow& window, sf::Event event, std::function<void()> foo)
+void Button::handleButtonEvent(sf::RenderWindow& window, sf::Event event)
 {
 	if (event.type == sf::Event::MouseButtonReleased && isCursorOverButton(window))
 	{
-		onClick(foo);
+		onClick();
 	}
 }

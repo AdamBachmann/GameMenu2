@@ -30,9 +30,9 @@ void Menu::handleMenu(sf::RenderWindow& window)
 	buttons.at(2)->handleButton(window);
 }
 
-void Menu::handleMenuEvent(sf::RenderWindow & window, sf::Event event, std::function<void()> foo)
+void Menu::handleMenuEvent(sf::RenderWindow & window, sf::Event event)
 {
-	buttons.at(0)->handleButtonEvent(window, event, foo);
-	buttons.at(1)->handleButtonEvent(window, event, foo);
-	buttons.at(2)->handleButtonEvent(window, event, foo);
+	buttons.at(0)->handleButtonEvent(window, event);
+	buttons.at(1)->handleButtonEvent(window, event);
+	buttons.at(2)->handleButtonEvent(window, event);
 }

@@ -2,11 +2,6 @@
 #include <iostream>
 #include "Menu.hpp"
 
-void ziuziu()
-{
-    std::cout << "Button clicked" << std::endl;
-}
-
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(800, 800), "Button Class");
@@ -19,7 +14,7 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            menu.handleMenuEvent(window, event, ziuziu);
+            menu.handleMenuEvent(window, event);
         }
 
         window.clear();
