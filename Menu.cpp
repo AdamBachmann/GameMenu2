@@ -2,13 +2,15 @@
 
 Menu::Menu()
 {
+	is_active = 0;
+
 	auto start_button = std::make_unique<Button>();
 	auto credits_button = std::make_unique<Button>();
 	auto quit_button = std::make_unique<Button>();
 
-	buttons.at(0) = std::move(start_button);
-	buttons.at(1) = std::move(credits_button);
-	buttons.at(2) = std::move(quit_button);
+	buttons.push_back(std::move(start_button));
+	buttons.push_back(std::move(credits_button));
+	buttons.push_back(std::move(quit_button));
 
 	buttons.at(0)->setPosition(sf::Vector2f(0, 0));
 	buttons.at(0)->setTextPosition(sf::Vector2f(0, 0));
@@ -25,14 +27,21 @@ Menu::Menu()
 
 void Menu::handleMenu(sf::RenderWindow& window)
 {
-	buttons.at(0)->handleButton(window);
-	buttons.at(1)->handleButton(window);
-	buttons.at(2)->handleButton(window);
+	for (auto& it : buttons)
+	{
+		it->handleButton(window);
+	}
 }
 
-void Menu::handleMenuEvent(sf::RenderWindow & window, sf::Event event)
+void Menu::handleMenuEvent(sf::RenderWindow& window, sf::Event event)
 {
-	buttons.at(0)->handleButtonEvent(window, event);
-	buttons.at(1)->handleButtonEvent(window, event);
-	buttons.at(2)->handleButtonEvent(window, event);
+	for (auto& it : buttons)
+	{
+		it->handleButtonEvent(window, event);
+	}
+}
+
+void Menu::pushBack(std::unique_ptr<Button> button)
+{
+	buttons.push_back(std::move(button));
 }
